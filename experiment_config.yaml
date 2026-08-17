@@ -1,0 +1,118 @@
+# Global defaults
+global:
+  T: 200 # should be the same as input_length and output_length in the prediction section of each experiment
+  n_seeds: 50
+  seed_offset: 0
+
+experiments:
+  # -----------------------
+  # Experiment 1: RW drift
+  # -----------------------
+  - id: 1
+    name: "RW drift"
+    generator:
+      type: "rw_drift"
+      params:
+        x0: 0.0
+        sigma: 1.0
+      sweep:
+        mu: [-0.05, -0.025, -0.005, 0.005, 0.025, 0.05]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_mean"
+
+  # -----------------------
+  # Experiment 2: AR(1) persistence
+  # -----------------------
+  - id: 2
+    name: "AR(1) persistence"
+    generator:
+      type: "ar1"
+      params:
+        x0: 0.0
+        c: 0.0
+        sigma: 1.0
+      sweep:
+        beta: [-0.5, 0.0, 0.3, 0.6, 0.85, 0.98]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_beta"
+
+  # -----------------------
+  # Experiment 3: HO wavelength
+  # -----------------------
+  - id: 3
+    name: "HO wavelength"
+    generator:
+      type: "harmonic"
+      params:
+        A: 1.0
+        phase: 0.0
+        offset: 0.0
+        sigma: 0.05
+      sweep:
+        wavelength: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_wavelength"
+
+
+  # -----------------------
+  # Experiment 4: Regime Switch
+  # -----------------------
+  - id: 4
+    name: "RS dwell time"
+    generator:
+      type: "regime"
+      params:
+        slopes: [1.0, -1.0]
+        sigma: 0.05
+      sweep:
+        dwell_time: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_dwell_time"
+
+  # -----------------------
+  # Experiment 5: Energy Release
+  # -----------------------
+  - id: 5
+    name: "ER threshold"
+    generator:
+      type: "energy"
+      params:
+        mu: 1.0
+        sigma: 0.05
+      sweep:
+        threshold: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_threshold"
+
+
+
+  # -----------------------
+  # Experiment 6: Fractal Brownian Motion
+  # -----------------------
+  - id: 6
+    name: "FBM hurst"
+    generator:
+      type: "fbm"
+      params: {} # placeholder dummy as there are no other parameters besides hurst exponent
+      sweep:
+        hurst: [0.15, 0.3, 0.45, 0.55, 0.7, 0.85]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_hurst_exponent"
