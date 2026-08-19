@@ -253,7 +253,7 @@ def make_individual_scatter_plots(csv_path: str, output_dir: str):
         style_spines_and_ticks(ax)
 
         # 3. Explicitly set smaller label fonts and tick sizes after styling
-        ax.set_xlabel(f"Trajectory ParameterStatistic ({y_symbol})", fontsize=7.5, labelpad=4)
+        ax.set_xlabel(f"Trajectory Parameter Statistic ({y_symbol})", fontsize=7.5, labelpad=4)
         ax.set_ylabel(f"Model Parameter Statistic ({y_symbol})", fontsize=7.5, labelpad=4)
         ax.tick_params(axis="both", labelsize=6.5)
 
