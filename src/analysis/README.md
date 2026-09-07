@@ -12,6 +12,7 @@ graph LR
     utils[utils.py] --> metric_runner
     metric_runner --> create_metrics[create_metrics.py]
 ```
+`create_viz.py` and `create_quant.py` are standalone modules that do not import any other functions from this codebase.
 
 ## Data Flow
 
@@ -23,7 +24,10 @@ graph LR
     preds[artifacts/prediction/...] --> create_metrics
     create_metrics --> out_metric[artifacts/analysis/...]
     out_metric --> create_dataset[create_dataset.py]
-    create_dataset --> out_dataset[artifacts/dataset/...]
+    create_dataset --> out_dataset[artifacts/dataset/aggregated...]
     out_dataset --> create_viz[create_viz.py]
     create_viz --> out_viz[artifacts/plots/...]
+    out_dataset --> create_quant[create_quant.py]
+    create_quant --> out_bias[artifacts/dataset/bias...]
+    create_quant --> out_break[artifacts/dataset/breakpoint...]
 ```
