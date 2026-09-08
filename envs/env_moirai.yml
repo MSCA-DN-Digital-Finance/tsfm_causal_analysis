@@ -1,0 +1,7 @@
+name: moirai
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - ipykernel
+prefix: C:\Users\JanderM\AppData\Local\anaconda3\envs\moirai

@@ -9,7 +9,7 @@ if src_path not in sys.path:
 
 from prediction.inference_pipeline import inference_pipeline
 
-from prediction.adapters import chronos_input_adapter, chronos_output_adapter, timesfm_input_adapter, timesfm_output_adapter
+from prediction.adapters import *
 
 
 ############ INFERENCE PIPELINE TESTS ############
@@ -31,6 +31,11 @@ def timesfm_inference(model, formatted_input, horizon=3):
   
     
     return formatted_input
+
+def moirai_inference(model, formatted_input, horizon=3):
+    # Mock model that returns the input as point forecasts
+    return formatted_input
+
 
 testdata = [
     # Tensor is (Samples, Time Steps, Dimensions)
@@ -54,6 +59,15 @@ testdata = [
         timesfm_inference,
         timesfm_output_adapter,
         np.array([[[0.], [1.], [2.], [3.], [4.]]]) # expected output       
+    ),
+    # Case 2: Moirai adapters end-to-end test
+    (
+        np.array([[[0.], [1.], [2.], [3.], [4.]]]), # input sample
+        loader,
+        moirai_input_adapter,
+        moirai_inference,
+        moirai_output_adapter,
+        np.array([[[0.], [1.], [2.], [3.], [4.]]]) # expected output       
     )
 
 ]
@@ -70,7 +84,7 @@ def test_inference_pipeline(input, loader, input_adapter, model, output_adapter,
         "inference_fn": model,
         "output_adapter": output_adapter
     }
-    actual_output = inference_pipeline(model_spec=spec, data=input, horizon=3)
+    actual_output = inference_pipeline(model_name="mock_model", model_spec=spec, data=input, horizon=3)
     assert np.array_equal(actual_output, expected_output)
 
 

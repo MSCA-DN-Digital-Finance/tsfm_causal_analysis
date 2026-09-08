@@ -139,7 +139,7 @@ def test_run_prediction_orchestration(tmp_path):
         assert mock_pipe.call_count == 1
         
         args, kwargs = mock_pipe.call_args
-        assert args[0] == {"some": "spec"}
+        assert args[1] == {"some": "spec"}
         assert "data" in kwargs
         assert kwargs["data"].ndim >= 2 
         assert kwargs["horizon"] == 24

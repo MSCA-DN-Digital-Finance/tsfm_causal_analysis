@@ -162,3 +162,8 @@ def test_timesfm_output_adapter(input_list, expected_array):
     actual_array = timesfm_output_adapter(input_list=input_list)
 
     assert np.array_equal(actual_array, expected_array), "Output array does not match expected array"
+
+
+############ MOIRAI  ADAPTER TESTS ############
+
+# no tests required as the input and output adapters for Moirai are pass-through functions that do not modify the data.

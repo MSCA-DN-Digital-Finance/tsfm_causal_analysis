@@ -121,7 +121,7 @@ def run_prediction(
         # 4. Inference
         try:
             # We call our model pipeline (adapters + model + adapters)
-            predictions = inference_pipeline(model_spec, data=x, horizon=prediction_params["output_length"])
+            predictions = inference_pipeline(model_name, model_spec, data=x, horizon=prediction_params["output_length"])
         except Exception as e:
             print(f"Error during inference in {run_dir}: {e}")
             continue

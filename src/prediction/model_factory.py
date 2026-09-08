@@ -9,7 +9,7 @@ project_root = str(Path(__file__).resolve().parents[2])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.prediction.adapters import chronos_input_adapter, chronos_output_adapter, timesfm_input_adapter, timesfm_output_adapter
+from src.prediction.adapters import *
 
 
 
@@ -86,6 +86,23 @@ def load_timesfm_model(model_id: str = "google/timesfm-2.5-200m-pytorch") -> Any
     
     return model
 
+
+def load_moirai_model(model_id: str = "Salesforce/moirai-2.0-R-small", horizon: int = 100) -> Any:
+
+    from uni2ts.model.moirai2 import Moirai2Forecast, Moirai2Module
+
+    model = Moirai2Forecast(
+        module=Moirai2Module.from_pretrained(
+            model_id,
+        ),
+        prediction_length=horizon,
+        context_length=1680,
+        target_dim=1,
+        feat_dynamic_real_dim=0,
+        past_feat_dynamic_real_dim=0,
+    )
+
+    return model
 
 ########################### Inference Adapters #####################################
 
@@ -169,6 +186,32 @@ def timesfm_inference(
     return point_forecast
 
 
+def moirai_inference(
+    model: Any,
+    input_data: np.ndarray) -> np.ndarray:
+    """
+    Executes a forecast using the Moirai model and returns the predictions.
+
+    Args:
+        model (Any): The loaded Moirai model object.
+        input_data (np.ndarray): A 3D NumPy array of shape (1, time_steps, 1).
+    
+    Returns:
+        np.ndarray: A 3D NumPy array of shape (1, time_steps, 1) containing the predictions.
+    """
+
+    # 1. Generate the forecast.
+    # Moirai expects input of shape (1, time_steps, 1) and returns output of the same shape.
+    predictions = model.predict(input_data)
+
+    # 2. Compute the median across the first axis (samples) to get a single representative forecast.
+    median_preds = np.round(np.median(predictions[0], axis=0), decimals=4)
+
+    # 2. Return the predictions as a 3D array of shape (1, time_steps, 1) to maintain consistency with the input format.
+    median_preds = median_preds.reshape(1, -1, 1)
+    return median_preds
+
+
 
 ######################## Model Registry ##########################
 
@@ -185,5 +228,11 @@ MODEL_REGISTRY: Dict[str, Dict[str, Callable]] = {
         "input_adapter": chronos_input_adapter,
         "inference_fn": chronos_inference,
         "output_adapter": chronos_output_adapter,
+    },
+    "moirai": {
+        "loader": load_moirai_model,
+        "input_adapter": moirai_input_adapter,
+        "inference_fn": moirai_inference,
+        "output_adapter": moirai_output_adapter,
     }
 }

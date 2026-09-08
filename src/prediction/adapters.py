@@ -136,3 +136,51 @@ def timesfm_output_adapter(input_list: list[np.ndarray]) -> np.ndarray:
 
     return np.array(input_list).reshape(N, T, D)
 
+#################### MOIRAI ADAPTERS ####################
+
+# adapted from chronos_input_adapter
+
+def moirai_input_adapter(
+    input_data: np.ndarray
+        
+):
+
+    """
+    As Moirai expects input data in the shape (1, time_steps, 1), we can pass the input data 
+    directly to the model without any additional processing.
+
+    Parameters:
+    - input_data: A 3D NumPy array of shape (n_samples, time_steps, n_features).
+    
+    Returns:
+    - output_data: A 3D NumPy array of shape (n_samples, time_steps, n_features).
+    
+    Note:
+    The function assumes that the input data has at least one sample and one time step.
+    It does not perform bounds checking or handle edge cases.
+    """
+    # raise error if input data shape is not 1,n,1
+    if input_data.ndim != 3 or input_data.shape[0] != 1 or input_data.shape[2] != 1:
+        raise ValueError(
+            "Input data for moirai_input_adapter must be a 3D NumPy array with shape (1, n, 1)."
+        )
+
+    output_data = input_data
+
+    return output_data
+
+def moirai_output_adapter(model_output: np.ndarray) -> np.ndarray:
+    """
+    As Moirai returns output data in the shape (1, time_steps, 1), we can pass the data 
+    through without any additional processing.
+    
+    Parameters:
+    - model_output: A 3D NumPy array of shape (1, time_steps, 1).
+    
+    Returns:
+    - A 3D NumPy array of shape (1, time_steps, 1).
+    
+    Note:
+    The function assumes that the input data has the correct shape and does not perform extensive error checking.
+    """
+    return model_output 
