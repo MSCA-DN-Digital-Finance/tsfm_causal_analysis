@@ -31,6 +31,7 @@ PLOT_OUTPUT_DIR = Path(project_root) / "artifacts" / "plots"
 LABEL_MAPPINGS = {
     "chronos": "Chronos-2",
     "timesfm": "TimesFM-2.5",
+    "moirai": "Moirai-2.0",
     "trajectory": "Trajectory",
     "estimated_mean": r"$\hat{\mu}$",
     "estimated_beta": r"$\hat{\beta}$",
@@ -48,8 +49,9 @@ LABEL_MAPPINGS = {
 
 COLOR_PALETTE = {
     "Trajectory": "#7FC97F",
-    "TimesFM-2.5": "#FDC086",
-    "Chronos-2": "#beaed4",
+    "TimesFM-2.5": "#1518DF",
+    "Chronos-2": "#a80ee6",
+    "Moirai-2.0": "#d41111"
 }
 
 

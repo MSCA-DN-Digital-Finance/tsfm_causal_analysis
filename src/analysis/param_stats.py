@@ -93,7 +93,7 @@ def estimated_wavelength(trajectory: np.ndarray) -> float:
       - trajectory  : forecasted trajectory
 
     Returns:
-        - float: The estimated wavelength of the trajectory.
+        - float: The estimated wavelength of the trajectory. Upper bound is the length of the trajectory.
     """
     arr = _ensure_1d_trajectory(trajectory)
 
@@ -105,9 +105,9 @@ def estimated_wavelength(trajectory: np.ndarray) -> float:
     dominant_freq = float(frequencies[np.argmax(power)])
 
     # Convert frequency to wavelength (assuming unitary sampling rate)
-    estimated_wavelength = 1.0 / dominant_freq if dominant_freq != 0 else float('inf')
+    estimated_wavelength = 1.0 / dominant_freq if dominant_freq != 0 else float(len(trajectory))
 
-    return estimated_wavelength
+    return float(min(estimated_wavelength, float(len(trajectory))))
 
 
 def estimated_dwell_time(trajectory: np.ndarray, penalty: float = 1.5) -> float:

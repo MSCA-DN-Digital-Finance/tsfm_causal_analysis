@@ -55,7 +55,7 @@ def get_bias_from_df(df: pd.DataFrame) -> pd.DataFrame:
             b1_ci = f"[{ci[1][0]:.4f}, {ci[1][1]:.4f}]"
             
             # Wald Test (H0: const = 0, x1 = 1)
-            wald = res.wald_test("const = 0, x1 = 1")
+            wald = res.wald_test("const = 0, x1 = 1", use_f=False, scalar=True)
             p_val = float(wald.pvalue)
 
 
