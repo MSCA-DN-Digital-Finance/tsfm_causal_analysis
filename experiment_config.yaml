@@ -5,6 +5,12 @@ global:
   seed_offset: 0
 
 experiments:
+
+####################################
+# Base Experiments
+####################################
+
+
   # -----------------------
   # Experiment 1: RW drift
   # -----------------------
@@ -116,3 +122,122 @@ experiments:
       output_length: 200
     analysis:
       param_stat: "estimated_hurst_exponent"
+
+####################################
+# Sensitivity Analysis Experiments
+####################################
+
+  # -----------------------
+  # Experiment 7: HO wavelength with sigma = 0.1
+  # -----------------------
+  - id: 7
+    name: "HO wavelength with sigma = 0.1"
+    generator:
+      type: "harmonic"
+      params:
+        A: 1.0
+        phase: 0.0
+        offset: 0.0
+        sigma: 0.1
+      sweep:
+        wavelength: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_wavelength"
+
+  # -----------------------
+  # Experiment 8: HO wavelength with sigma = 0.2
+  # -----------------------
+  - id: 8
+    name: "HO wavelength with sigma = 0.2"
+    generator:
+      type: "harmonic"
+      params:
+        A: 1.0
+        phase: 0.0
+        offset: 0.0
+        sigma: 0.2
+      sweep:
+        wavelength: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_wavelength"
+
+  # -----------------------
+  # Experiment 9: HO wavelength with sigma = 0.4
+  # -----------------------
+  - id: 9
+    name: "HO wavelength with sigma = 0.4"
+    generator:
+      type: "harmonic"
+      params:
+        A: 1.0
+        phase: 0.0
+        offset: 0.0
+        sigma: 0.4
+      sweep:
+        wavelength: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 200
+      output_length: 200
+    analysis:
+      param_stat: "estimated_wavelength"
+
+
+  # -----------------------
+  # Experiment 10: Regime Switch with T = 400
+  # -----------------------
+  - id: 10
+    name: "RS dwell time with T = 400"
+    generator:
+      type: "regime"
+      params:
+        slopes: [1.0, -1.0]
+        sigma: 0.05
+      sweep:
+        dwell_time: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 400
+      output_length: 200
+    analysis:
+      param_stat: "estimated_dwell_time"
+
+  # -----------------------
+  # Experiment 11: Regime Switch with T = 600
+  # -----------------------
+  - id: 11
+    name: "RS dwell time with T = 600"
+    generator:
+      type: "regime"
+      params:
+        slopes: [1.0, -1.0]
+        sigma: 0.05
+      sweep:
+        dwell_time: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 400
+      output_length: 200
+    analysis:
+      param_stat: "estimated_dwell_time"
+
+  # -----------------------
+  # Experiment 12: Regime Switch with T = 800
+  # -----------------------
+  - id: 12
+    name: "RS dwell time with T = 800"
+    generator:
+      type: "regime"
+      params:
+        slopes: [1.0, -1.0]
+        sigma: 0.05
+      sweep:
+        dwell_time: [5, 10, 25, 50, 75, 100]
+    prediction:
+      input_length: 800
+      output_length: 200
+    analysis:
+      param_stat: "estimated_dwell_time"
