@@ -219,7 +219,7 @@ experiments:
       sweep:
         dwell_time: [5, 10, 25, 50, 75, 100]
     prediction:
-      input_length: 400
+      input_length: 600
       output_length: 200
     analysis:
       param_stat: "estimated_dwell_time"
