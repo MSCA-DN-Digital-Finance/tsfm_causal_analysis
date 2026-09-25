@@ -1,7 +1,7 @@
 # Global defaults
 global:
   T: 200 # should be the same as input_length and output_length in the prediction section of each experiment
-  n_seeds: 50
+  n_seeds: 100
   seed_offset: 0
 
 experiments:
