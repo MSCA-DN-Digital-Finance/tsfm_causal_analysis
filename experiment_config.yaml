@@ -22,7 +22,12 @@ experiments:
         x0: 0.0
         sigma: 1.0
       sweep:
-        mu: [-0.05, -0.025, -0.005, 0.005, 0.025, 0.05]
+        mu: [
+          -1.0, -0.9, -0.8, -0.7, -0.6,
+          -0.5, -0.4, -0.3, -0.2, -0.1,
+          0.1,  0.2,  0.3,  0.4,  0.5,
+          0.6,  0.7,  0.8,  0.9,  1.0
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -41,7 +46,12 @@ experiments:
         c: 0.0
         sigma: 1.0
       sweep:
-        beta: [-0.5, 0.0, 0.3, 0.6, 0.85, 0.98]
+        beta: [
+          0.05, 0.10, 0.15, 0.20, 0.25,
+          0.30, 0.35, 0.40, 0.45, 0.50,
+          0.55, 0.60, 0.65, 0.70, 0.75,
+          0.80, 0.85, 0.90, 0.95, 1.00
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -61,7 +71,12 @@ experiments:
         offset: 0.0
         sigma: 0.05
       sweep:
-        wavelength: [5, 10, 25, 50, 75, 100]
+        wavelength: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -80,7 +95,12 @@ experiments:
         slopes: [1.0, -1.0]
         sigma: 0.05
       sweep:
-        dwell_time: [5, 10, 25, 50, 75, 100]
+        dwell_time: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -98,7 +118,12 @@ experiments:
         mu: 1.0
         sigma: 0.05
       sweep:
-        threshold: [5, 10, 25, 50, 75, 100]
+        threshold: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -116,7 +141,12 @@ experiments:
       type: "fbm"
       params: {} # placeholder dummy as there are no other parameters besides hurst exponent
       sweep:
-        hurst: [0.15, 0.3, 0.45, 0.55, 0.7, 0.85]
+        hurst: [
+          0.05, 0.10, 0.15, 0.20, 0.25,
+          0.30, 0.35, 0.40, 0.45, 0.50,
+          0.55, 0.60, 0.65, 0.70, 0.75,
+          0.80, 0.85, 0.90, 0.95, 0.99
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -140,7 +170,12 @@ experiments:
         offset: 0.0
         sigma: 0.1
       sweep:
-        wavelength: [5, 10, 25, 50, 75, 100]
+        wavelength: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -160,7 +195,12 @@ experiments:
         offset: 0.0
         sigma: 0.2
       sweep:
-        wavelength: [5, 10, 25, 50, 75, 100]
+        wavelength: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -180,7 +220,12 @@ experiments:
         offset: 0.0
         sigma: 0.4
       sweep:
-        wavelength: [5, 10, 25, 50, 75, 100]
+        wavelength: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 200
       output_length: 200
@@ -199,7 +244,12 @@ experiments:
         slopes: [1.0, -1.0]
         sigma: 0.05
       sweep:
-        dwell_time: [5, 10, 25, 50, 75, 100]
+        dwell_time: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 400
       output_length: 200
@@ -217,7 +267,12 @@ experiments:
         slopes: [1.0, -1.0]
         sigma: 0.05
       sweep:
-        dwell_time: [5, 10, 25, 50, 75, 100]
+        dwell_time: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 600
       output_length: 200
