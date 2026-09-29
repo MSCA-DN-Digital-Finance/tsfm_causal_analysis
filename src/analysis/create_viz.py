@@ -38,13 +38,13 @@ LABEL_MAPPINGS = {
     "estimated_wavelength": r"$\hat{\lambda}$",
     "estimated_dwell_time": r"$\hat{\tau}$",
     "estimated_threshold": r"$\hat{\kappa}$",
-    "estimated_hurst_exponent": r"$\hat{H}$",
+    "estimated_hurst_exponent": r"$\hat{h}$",
     "mu": r"$\mu$",
     "beta": r"$\beta$",
     "wavelength": r"$\lambda$",
     "dwell_time": r"$\tau$",
     "threshold": r"$\kappa$",
-    "hurst": r"$H$",
+    "hurst": r"$h$",
 }
 
 COLOR_PALETTE = {
