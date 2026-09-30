@@ -121,7 +121,10 @@ def make_experiment_boxplots(csv_path: str, output_dir: str):
         fig = plt.figure(figsize=(FIGWIDTH, FIGHEIGHT))
         ax = plt.gca()
 
-        param_vals = sorted(df_exp["parameter_value"].unique())
+
+        # filter down to every second index for plotting
+        param_vals = sorted(df_exp["parameter_value"].unique())[::2]
+
         models = df_exp["param_stat_of"].unique()
 
         n_models = len(models)
@@ -268,6 +271,7 @@ def make_individual_scatter_plots(csv_path: str, output_dir: str):
         plt.close(fig)
         print(f" -> Saved: {save_file}")
 
+
 def make_experiment_trajectories(csv_path: str, output_dir: str):
     """Plot 3: Subplot grid showing ground truth vs predicted time-series trajectories (vertically stacked)."""
     apply_pgf_style()
@@ -288,12 +292,15 @@ def make_experiment_trajectories(csv_path: str, output_dir: str):
         param_symbol = LABEL_MAPPINGS.get(
             intervention_param, intervention_param
         )
-        param_values = sorted(df_exp["parameter_value"].unique())
+
+        # filter down to every third index for plotting
+        param_values = sorted(df_exp["parameter_value"].unique())[::3]
 
         model_paths = {}
         gt_paths = {}
 
         for val in param_values:
+
             df_val = df_exp[df_exp["parameter_value"] == val]
             run_id = df_val["run_id"].iloc[0] if len(df_val) > 0 else None
             if not run_id:
