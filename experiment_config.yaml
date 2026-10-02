@@ -290,7 +290,12 @@ experiments:
         slopes: [1.0, -1.0]
         sigma: 0.05
       sweep:
-        dwell_time: [5, 10, 25, 50, 75, 100]
+        dwell_time: [
+          5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75,
+          80, 85, 90, 95, 100
+          ]
     prediction:
       input_length: 800
       output_length: 200
