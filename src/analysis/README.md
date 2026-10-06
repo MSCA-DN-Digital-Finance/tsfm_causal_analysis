@@ -8,12 +8,12 @@ The plot below shows the dependencies between the modules in this directory.
 
 ```mermaid
 graph LR
-    param_stats[param_stats.py] --> metric_runner[metric_runner.py]
+    param_estimates[param_estimates.py] --> metric_runner[metric_runner.py]
     utils[utils.py] --> metric_runner
     metric_runner --> create_metrics[create_metrics.py]
     breakpoint_funcs[breakpoint_funcs.py] --> create_quant[create_quant.py]
 ```
-`create_viz.py` and `create_quant.py` are standalone modules that do not import any other functions from this codebase.
+`create_viz.py` and `create_dataset.py` are standalone modules that do not import any other functions from this codebase.
 
 ## Data Flow
 

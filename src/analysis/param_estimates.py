@@ -214,7 +214,7 @@ def estimated_hurst_exponent(trajectory: np.ndarray) -> float:
 
 
 # Set up parameter statistics registry
-PARAM_STATS_REGISTRY = {
+PARAM_ESTIMATES_REGISTRY = {
     "estimated_mean": estimated_mean,
     "estimated_beta": estimated_beta,
     "estimated_wavelength": estimated_wavelength,

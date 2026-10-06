@@ -62,8 +62,8 @@ def test_run_metric_orchestration(tmp_path):
     )
     
     # 5. Assertions: Verify outputs exist and calculations are correct
-    pred_analysis_file = output_root / run_hash / model_name / "param_stats.json"
-    traj_analysis_file = output_root / run_hash / "trajectory" / "param_stats.json"
+    pred_analysis_file = output_root / run_hash / model_name / "param_estimates.json"
+    traj_analysis_file = output_root / run_hash / "trajectory" / "param_estimates.json"
     
     assert pred_analysis_file.exists()
     assert traj_analysis_file.exists()

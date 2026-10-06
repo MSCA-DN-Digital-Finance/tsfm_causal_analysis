@@ -89,6 +89,7 @@ def first_seg_wald(x: np.array,y: np.array, breakpoint_lb: float)-> dict:
 
     return wald_res_dict
 
+
 def breakpoint_analysis(x_data: np.ndarray, y_data: np.ndarray, path: str, n_breakpoints=1, plot=True, verbose=True)-> dict:
     """
     Performs breakpoint analysis piecewise regression and Wald test on the first segment.
@@ -179,20 +180,20 @@ def breakpoint_runner(df: pd.DataFrame, path: str) -> pd.DataFrame:
 
     # Step 2: iterate over experiments
     for (exp_id, gen_name), group in grouped:
-        x = group[group['param_stat_of'] == 'trajectory']['param_stat_value'].values
+        x = group[group['param_est_of'] == 'trajectory']['param_est_value'].values
 
         # Step 2.1: Skip if x array is len(0)
         if len(x) == 0:
             continue
 
         # Step 2.2: Iterate over models for each experiment
-        for model_name in df['param_stat_of'].unique().tolist():
+        for model_name in df['param_est_of'].unique().tolist():
 
             # Ignore trajectory as it is not a model
             if model_name == 'trajectory':
                 continue
 
-            y = group[group['param_stat_of'] == model_name]['param_stat_value'].values
+            y = group[group['param_est_of'] == model_name]['param_est_value'].values
 
             # Skip if x and y do not have same length. 
             if len(x) != len(y):
@@ -243,6 +244,8 @@ def breakpoint_runner(df: pd.DataFrame, path: str) -> pd.DataFrame:
                 'Comment': comment
                 
             })
+
+            print(f"Processed Experiment: {exp_id}, Generator: {gen_name}, Model: {model_name}")
 
 
     summary_df = pd.DataFrame(results)

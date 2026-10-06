@@ -18,7 +18,7 @@ from src.utils import get_exp_id_from_meta
 
 def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:dict):
     """
-    Iterate over each run directory in the given path and call calculate_param_stats for each run.
+    Iterate over each run directory in the given path and call calculate_param_estimates for each run.
 
     Args:
         INPUT_ROOT (str): Path to the directory containing predictions.
@@ -62,24 +62,24 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
         gen_dir = INPUT_ROOT.parent / "generation" / hash # information about the experiment_id is stored in the generation folder, not in the prediction folder
         exp_id = get_exp_id_from_meta(gen_dir)
 
-        # 3. Safely extract the param_stat_name from the experiments list
-        param_stat_name = None
+        # 3. Safely extract the param_estimate_name from the experiments list
+        param_estimate_name = None
 
         for exp in exp_config.get('experiments', []):
             # Convert both IDs to strings to ensure matching type ('1' == '1')
             if str(exp.get('id')) == str(exp_id):
-                param_stat_name = exp.get('analysis', {}).get('param_stat')
+                param_estimate_name = exp.get('analysis', {}).get('param_stat')
                 break
 
         # Handle edge case where lookup fails
-        if not param_stat_name:
+        if not param_estimate_name:
             raise KeyError(
                 f"Could not find an experiment matching ID '{exp_id}' in your configuration file. "
                 f"Available IDs: {[e.get('id') for e in exp_config.get('experiments', [])]}"
     )
 
         # 4. select parameter statistic function from param_registry
-        param_stat_func = param_registry.get(param_stat_name)
+        param_estimate_func = param_registry.get(param_estimate_name)
 
         # 5. Load predictions.npz file and extract the 'trajectory' array safely
         with np.load(pred_file_path) as data:
@@ -101,17 +101,17 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
 
         # 6. run the parameter statistic function on the loaded data
         try:
-            param_stat_value = param_stat_func(trajectory)
+            param_estimate_value = param_estimate_func(trajectory)
         except Exception as e:
-            print(f"Error computing {param_stat_name} for {pred_file_path}: {e}")
-            param_stat_value = None
+            print(f"Error computing {param_estimate_name} for {pred_file_path}: {e}")
+            param_estimate_value = None
 
         # 7. create a results dictionary to store the computed parameter statistics
-        results = {param_stat_name: param_stat_value}
+        results = {param_estimate_name: param_estimate_value}
 
-        # 8. save the results dictionary to analysis_dir/param_stats.json
-        param_stats_file = analysis_dir / "param_stats.json"
-        with open(param_stats_file, 'w') as f:
+        # 8. save the results dictionary to analysis_dir/param_estimates.json
+        param_estimates_file = analysis_dir / "param_estimates.json"
+        with open(param_estimates_file, 'w') as f:
             json.dump(results, f, indent=4)
 
     # Do the same for trajectories.npz files in the INPUT_ROOT.parent / "generation" directory
@@ -138,24 +138,24 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
         gen_dir = Path(INPUT_ROOT).parent / "generation" / hash # information about the experiment_id is stored in the generation folder, not in the prediction folder
         exp_id = get_exp_id_from_meta(gen_dir)
 
-        # 3. Safely extract the param_stat_name from the experiments list
-        param_stat_name = None
+        # 3. Safely extract the param_estimate_name from the experiments list
+        param_estimate_name = None
 
         for exp in exp_config.get('experiments', []):
             # Convert both IDs to strings to ensure matching type ('1' == '1')
             if str(exp.get('id')) == str(exp_id):
-                param_stat_name = exp.get('analysis', {}).get('param_stat')
+                param_estimate_name = exp.get('analysis', {}).get('param_estimate')
                 break
 
         # Handle edge case where lookup fails
-        if not param_stat_name:
+        if not param_estimate_name:
             raise KeyError(
                 f"Could not find an experiment matching ID '{exp_id}' in your configuration file. "
                 f"Available IDs: {[e.get('id') for e in exp_config.get('experiments', [])]}"
     )
 
         # 4. select parameter statistic function from param_registry
-        param_stat_func = param_registry.get(param_stat_name)
+        param_estimate_func = param_registry.get(param_estimate_name)
 
         # 5. load trajectories.npz file and extract the 'x' array
         with np.load(traj_file_path) as data:
@@ -163,17 +163,17 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
 
         # 6. run the parameter statistic function on the loaded data
         try:
-            param_stat_value = param_stat_func(trajectory)
+            param_estimate_value = param_estimate_func(trajectory)
         except Exception as e:
-            print(f"Error computing {param_stat_name} for {traj_file_path}: {e}")
-            param_stat_value = None
+            print(f"Error computing {param_estimate_name} for {traj_file_path}: {e}")
+            param_estimate_value = None
 
         # 7. create a results dictionary to store the computed parameter statistics
-        results = {param_stat_name: param_stat_value}
+        results = {param_estimate_name: param_estimate_value}
 
-        # 8. save the results dictionary to analysis_dir/param_stats.json
-        param_stats_file = analysis_dir / "param_stats.json"
-        with open(param_stats_file, 'w') as f:
+        # 8. save the results dictionary to analysis_dir/param_estimates.json
+        param_estimates_file = analysis_dir / "param_estimates.json"
+        with open(param_estimates_file, 'w') as f:
             json.dump(results, f, indent=4)
 
 

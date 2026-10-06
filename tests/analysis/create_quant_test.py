@@ -33,8 +33,8 @@ def base_df_builder():
             {
                 "experiment_id": exp_id,
                 "generator_name": gen_name,
-                "param_stat_of": "trajectory",
-                "param_stat_value": x,
+                "param_estimate_of": "trajectory",
+                "param_estimate_value": x,
             }
         )
 
@@ -43,8 +43,8 @@ def base_df_builder():
             {
                 "experiment_id": exp_id,
                 "generator_name": gen_name,
-                "param_stat_of": "model_v1",
-                "param_stat_value": model_values(x),
+                "param_estimate_of": "model_v1",
+                "param_estimate_value": model_values(x),
             }
         )
 
@@ -64,8 +64,8 @@ def test_empty_or_mismatched_data_returns_empty_summary():
         {
             "experiment_id": ["exp_1"] * 2,
             "generator_name": ["gen_A"] * 2,
-            "param_stat_of": ["model_v1", "model_v1"],
-            "param_stat_value": [1.0, 2.0],
+            "param_estimate_of": ["model_v1", "model_v1"],
+            "param_estimate_value": [1.0, 2.0],
         }
     )
 
@@ -262,8 +262,8 @@ def make_df():
             {
                 "experiment_id": exp_id,
                 "generator_name": gen_name,
-                "param_stat_of": "trajectory",
-                "param_stat_value": x,
+                "param_estimate_of": "trajectory",
+                "param_estimate_value": x,
             }
         )
 
@@ -271,8 +271,8 @@ def make_df():
             {
                 "experiment_id": exp_id,
                 "generator_name": gen_name,
-                "param_stat_of": model_name,
-                "param_stat_value": y_func(x),
+                "param_estimate_of": model_name,
+                "param_estimate_value": y_func(x),
             }
         )
 
@@ -292,8 +292,8 @@ def test_missing_trajectory_returns_empty_summary():
         {
             "experiment_id": ["exp_1"] * 2,
             "generator_name": ["gen_A"] * 2,
-            "param_stat_of": ["model_1", "model_1"],
-            "param_stat_value": [1.0, 2.0],
+            "param_estimate_of": ["model_1", "model_1"],
+            "param_estimate_value": [1.0, 2.0],
         }
     )
 

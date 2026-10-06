@@ -36,14 +36,16 @@ def get_bias_from_df(df: pd.DataFrame) -> pd.DataFrame:
 
     for (exp_id, gen_name), group in df.groupby(['experiment_id', 'generator_name']):
         # Ground truth baseline
-        x_raw = group[group['param_stat_of'] == 'trajectory']['param_stat_value'].values
+        x_raw = group[group['param_estimate_of'] == 'trajectory']['param_estimate_value'].values
         
-        for model_name in df['param_stat_of'].unique().tolist():
+        for model_name in df['param_estimate_of'].unique().tolist():
             if model_name == 'trajectory':
                 continue
-            y = group[group['param_stat_of'] == model_name]['param_stat_value'].values
+            y = group[group['param_estimate_of'] == model_name]['param_estimate_value'].values
             
             if len(x_raw) == 0 or len(y) == 0 or len(x_raw) != len(y):
+                print(f"Skipping Experiment: {exp_id}, Generator: {gen_name}, Model: {model_name} due to data issues.")
+                print(f"x_raw length: {len(x_raw)}, y length: {len(y)}")
                 continue
                 
             # Fit OLS
@@ -111,6 +113,8 @@ def get_bias_from_df(df: pd.DataFrame) -> pd.DataFrame:
                 'Decision': decision,
                 'Bias Classification': bias_type
             })
+
+            print(f"Processed Experiment: {exp_id}, Generator: {gen_name}, Model: {model_name}")
 
     summary_df = pd.DataFrame(results)
     return summary_df

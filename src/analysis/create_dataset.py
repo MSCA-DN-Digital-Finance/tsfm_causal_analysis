@@ -8,9 +8,9 @@ The final dataset should have the following columns:
 - generator_name: The name of the generator used.
 - intervention_param: The parameter intervened on.
 - parameter_value: The value of the intervened parameter.
-- param_stat_name: The name of the parameter statistic.
-- param_stat_of: The  model name or "trajectory" that the parameter statistic was calculated on. 
-- param_stat_value: The computed value of the parameter statistic for the generator's output.
+- param_estimate_name: The name of the parameter statistic.
+- param_estimate_of: The  model name or "trajectory" that the parameter statistic was calculated on. 
+- param_estimate_value: The computed value of the parameter statistic for the generator's output.
 
 """
 
@@ -59,31 +59,31 @@ def create_dataset(analysis_dir: str, output_dir: str, exp_config: dict):
 
     # Create a records list to append data to
     records = []
-    # Get list of param_stats.json file paths in analysis_dir
-    param_stat_file_paths = list(analysis_dir.rglob("*/param_stats.json"))
-    print(f"Found {len(param_stat_file_paths)} param_stats.json files in {analysis_dir}!")
+    # Get list of param_estimates.json file paths in analysis_dir
+    param_estimate_file_paths = list(analysis_dir.rglob("*/param_estimates.json"))
+    print(f"Found {len(param_estimate_file_paths)} param_estimates.json files in {analysis_dir}!")
 
     print("Starting to process files...")
-    for count, param_stat_file_path in enumerate(param_stat_file_paths):
+    for count, param_estimate_file_path in enumerate(param_estimate_file_paths):
 
         
     # From analysis/hash/../param_stat.json
 
         # Get run_id from path
-        run_id = param_stat_file_path.parts[-3]
+        run_id = param_estimate_file_path.parts[-3]
 
-        # Get param_stat_of from path
+        # Get param_estimate_of from path
 
-        param_stat_of = param_stat_file_path.parts[-2]
+        param_estimate_of = param_estimate_file_path.parts[-2]
 
-        # Get param_stat_name from file
-        with open(param_stat_file_path, "r") as f:
-            param_stats_file_content = json.load(f)
+        # Get param_estimate_name from file
+        with open(param_estimate_file_path, "r") as f:
+            param_estimates_file_content = json.load(f)
 
-        param_stat_name = next(iter(param_stats_file_content))
+        param_estimate_name = next(iter(param_estimates_file_content))
         
-        # Get param_stat_value from file
-        param_stat_value = param_stats_file_content[param_stat_name]
+        # Get param_estimate_value from file
+        param_estimate_value = param_estimates_file_content[param_estimate_name]
         
     # From generation/hash/meta.json
 
@@ -121,21 +121,21 @@ def create_dataset(analysis_dir: str, output_dir: str, exp_config: dict):
             "generator_name": generator_name,
             "intervention_param": intervention_param,
             "parameter_value": parameter_value,
-            "param_stat_name": param_stat_name,
-            "param_stat_of": param_stat_of,
-            "param_stat_value": param_stat_value
+            "param_estimate_name": param_estimate_name,
+            "param_estimate_of": param_estimate_of,
+            "param_estimate_value": param_estimate_value
         }
         
         # Append values to records
         records.append(row)
 
         if (count+1) % 100 == 0:
-            print(f"{count+1} out of {len(param_stat_file_paths)} files completed...")
+            print(f"{count+1} out of {len(param_estimate_file_paths)} files completed...")
 
     # Create dataframe from records
     df = pd.DataFrame(records, columns=[
             "run_id", "experiment_id", "generator_name", "intervention_param", 
-            "parameter_value", "param_stat_name", "param_stat_of", "param_stat_value"
+            "parameter_value", "param_estimate_name", "param_estimate_of", "param_estimate_value"
         ])
     
     # Save the DataFrame as a CSV file in the output_dir

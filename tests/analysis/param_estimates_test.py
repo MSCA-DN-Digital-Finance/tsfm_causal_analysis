@@ -1,5 +1,5 @@
 """
-This file contains unit tests for the param_stats functions in the `analysis.param_stats` module.
+This file contains unit tests for the param_estimates functions in the `analysis.param_estimates` module.
 """
 
 import os
@@ -13,7 +13,7 @@ from fbm import fbm
 src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 sys.path.append(src_path)
 
-from analysis.param_stats import (
+from analysis.param_estimates import (
     estimated_mean,
     estimated_beta,
     estimated_wavelength,

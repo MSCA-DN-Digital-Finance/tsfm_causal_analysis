@@ -107,16 +107,16 @@ def make_experiment_boxplots(csv_path: str, output_dir: str):
         if df_exp.empty:
             continue
 
-        df_exp["param_stat_of"] = df_exp["param_stat_of"].map(
+        df_exp["param_estimate_of"] = df_exp["param_estimate_of"].map(
             lambda x: LABEL_MAPPINGS.get(x, x)
         )
         df_exp = df_exp.sort_values(by="parameter_value")
 
         intervention_param = df_exp["intervention_param"].iloc[0]
-        param_stat_name = df_exp["param_stat_name"].iloc[0]
+        param_estimate_name = df_exp["param_estimate_name"].iloc[0]
 
         x_symbol = LABEL_MAPPINGS.get(intervention_param, intervention_param)
-        y_symbol = LABEL_MAPPINGS.get(param_stat_name, param_stat_name)
+        y_symbol = LABEL_MAPPINGS.get(param_estimate_name, param_estimate_name)
 
         fig = plt.figure(figsize=(FIGWIDTH, FIGHEIGHT))
         ax = plt.gca()
@@ -125,17 +125,17 @@ def make_experiment_boxplots(csv_path: str, output_dir: str):
         # filter down to every second index for plotting
         param_vals = sorted(df_exp["parameter_value"].unique())[::2]
 
-        models = df_exp["param_stat_of"].unique()
+        models = df_exp["param_estimate_of"].unique()
 
         n_models = len(models)
         box_width = 0.8 / n_models
         x_indices = np.arange(len(param_vals))
 
         for i, model in enumerate(models):
-            model_df = df_exp[df_exp["param_stat_of"] == model]
+            model_df = df_exp[df_exp["param_estimate_of"] == model]
             data_per_val = [
                 model_df[model_df["parameter_value"] == v][
-                    "param_stat_value"
+                    "param_estimate_value"
                 ].dropna().values
                 for v in param_vals
             ]
@@ -185,13 +185,13 @@ def make_individual_scatter_plots(csv_path: str, output_dir: str):
         if df_exp.empty:
             continue
 
-        param_stat_name = df_exp["param_stat_name"].iloc[0]
-        y_symbol = LABEL_MAPPINGS.get(param_stat_name, param_stat_name)
+        param_estimate_name = df_exp["param_estimate_name"].iloc[0]
+        y_symbol = LABEL_MAPPINGS.get(param_estimate_name, param_estimate_name)
 
         pivot_df = df_exp.pivot(
             index=["run_id", "parameter_value"],
-            columns="param_stat_of",
-            values="param_stat_value",
+            columns="param_estimate_of",
+            values="param_estimate_value",
         ).reset_index()
 
         if "trajectory" not in pivot_df.columns:
@@ -258,8 +258,8 @@ def make_individual_scatter_plots(csv_path: str, output_dir: str):
         style_spines_and_ticks(ax)
 
         # 3. Explicitly set smaller label fonts and tick sizes after styling
-        ax.set_xlabel(f"Trajectory Parameter Statistic ({y_symbol})", fontsize=7.5, labelpad=4)
-        ax.set_ylabel(f"Model Parameter Statistic ({y_symbol})", fontsize=7.5, labelpad=4)
+        ax.set_xlabel(f"Trajectory Parameter Estimate ({y_symbol})", fontsize=7.5, labelpad=4)
+        ax.set_ylabel(f"Model Parameter Estimate ({y_symbol})", fontsize=7.5, labelpad=4)
         ax.tick_params(axis="both", labelsize=6.5)
 
         apply_legend_style(ax, loc="upper left")
