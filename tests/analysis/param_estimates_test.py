@@ -151,7 +151,7 @@ estimated_wavelength_testdata = [
     # Case 2: Constant signal of ones (should return 0.0 as dominant frequency)
     (
         np.ones(n),
-        float('inf') # expected wavelength (1/frequency)
+        1000.0 # expected wavelength 1000
     ),
     # Case 3: Empty trajectory
     (

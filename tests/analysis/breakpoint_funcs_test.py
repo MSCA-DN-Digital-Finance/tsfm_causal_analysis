@@ -77,7 +77,7 @@ def test_first_seg_wald(dataset_fn, expectation):
 
     wald_res = first_seg_wald(x,y,bp)
 
-    if wald_res.pvalue < 0.05:
+    if wald_res['pvalue'] < 0.05:
         reject = False
     else:
         reject = True

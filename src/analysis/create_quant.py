@@ -6,13 +6,12 @@ This file contains the functions to create tables for the bias and break point q
 
 import pandas as pd
 import numpy as np
-from scipy.optimize import curve_fit
-from scipy.stats import f as f_dist
+
 import statsmodels.api as sm
 from pathlib import Path
 import sys
 
-from breakpoint_funcs import *
+from analysis.breakpoint_funcs import *
 
 # Calculate the project root (2 levels up from src/prediction/)
 project_root = str(Path(__file__).resolve().parents[2])

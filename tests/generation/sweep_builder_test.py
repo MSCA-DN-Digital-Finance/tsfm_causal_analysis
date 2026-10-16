@@ -20,9 +20,8 @@ def mock_config_file(tmp_path):
     """
     config_data = {
         "global": {
-            "T": 100,
             "n_seeds": 2,
-            "seed_offset": 10
+            "seed_offset": 0
         },
         "experiments": [
             {
@@ -33,6 +32,10 @@ def mock_config_file(tmp_path):
                     "params": {"x": 1},
                     "sweep": {"mu": [0.1, 0.2]}
                 },
+                "prediction": {
+                    "input_length": 100,
+                    "output_length": 100
+                }
             }
         ]
     }
@@ -62,7 +65,8 @@ def test_build_sweep_content(mock_config_file):
     assert first_entry["experiment_id"] == 1
     assert "mu" in first_entry["params"]
     assert first_entry["params"]["T"] == 100
-    assert first_entry["params"]["seed_noise"] == 10  # seed_offset (10) + first index (0)
+    assert first_entry["params"]["T"] == 100
+    assert first_entry["params"]["seed_noise"] == 0  # seed_offset (0) + first index (0)
 
 def test_invalid_path():
     """

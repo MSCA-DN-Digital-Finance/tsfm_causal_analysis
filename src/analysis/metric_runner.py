@@ -51,7 +51,7 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
         if analysis_dir.exists():
             print(f"Skipping {pred_file_path} as analysis directory {analysis_dir} already exists.")
             continue
-        print(f"Parameter statistics for {pred_file_path} will be saved to {analysis_dir}")
+        print(f"Parameter estimates for {pred_file_path} will be saved to {analysis_dir}")
 
         # create the analysis directory if it doesn't exist
         analysis_dir.mkdir(parents=True, exist_ok=True)
@@ -68,7 +68,7 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
         for exp in exp_config.get('experiments', []):
             # Convert both IDs to strings to ensure matching type ('1' == '1')
             if str(exp.get('id')) == str(exp_id):
-                param_estimate_name = exp.get('analysis', {}).get('param_stat')
+                param_estimate_name = exp.get('analysis', {}).get('param_estimate')
                 break
 
         # Handle edge case where lookup fails
@@ -129,7 +129,7 @@ def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:
         if analysis_dir.exists():
             print(f"Skipping {traj_file_path} as analysis directory {analysis_dir} already exists.")
             continue
-        print(f"Parameter statistics for {traj_file_path} will be saved to {analysis_dir}")
+        print(f"Parameter estimates for {traj_file_path} will be saved to {analysis_dir}")
 
         # create the analysis directory if it doesn't exist
         analysis_dir.mkdir(parents=True, exist_ok=True)

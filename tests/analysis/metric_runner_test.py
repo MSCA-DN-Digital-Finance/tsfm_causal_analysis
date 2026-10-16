@@ -46,7 +46,11 @@ def test_run_metric_orchestration(tmp_path):
     # 3. Setup Config and Registry Inputs
     exp_config = {
         "experiments": [
-            {"id": 1, "analysis": {"param_stat": "mock_stat"}}
+            {
+            "id": 1, 
+            "analysis": 
+                {"param_estimate": "mock_stat"}
+            }
         ]
     }
     

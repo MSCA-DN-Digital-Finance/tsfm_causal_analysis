@@ -11,7 +11,7 @@ graph TD
     exp_conf[experiment_config.yaml] --> create_traj[create_traj.py]
     create_traj --> out_gen[artifacts/trajectories/...]
     out_gen --> create_preds[create_preds_modelname.py]
-    exp_conf --> create_preds[create_traj.py]
+    exp_conf --> create_preds[create_preds.py]
     create_preds --> out_pred[artifacts/prediction/...]
     out_pred --> create_metrics[create_metrics.py]
     create_metrics --> out_metric[artifacts/analysis/...]

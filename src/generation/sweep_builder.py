@@ -42,7 +42,7 @@ def build_sweep(config_path="config.yaml"):
                 entry = {
                     "experiment_id": exp['id'],
                     "generator": exp['generator']['type'],
-                    "params" : {**exp['generator']['params'], sweep_param_name: val, "T": glob['T'], "seed_noise": int(seed)}
+                    "params" : {**exp['generator']['params'], sweep_param_name: val, "T": exp['prediction']['input_length'], "seed_noise": int(seed)}
                 }
                 sweep.append(entry)
                 
