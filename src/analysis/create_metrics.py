@@ -9,7 +9,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.utils import load_config
-from analysis.param_estimates import PARAM_ESTIMATES_REGISTRY
+from src.analysis.param_estimates import PARAM_ESTIMATES_REGISTRY
 from src.analysis.metric_runner import run_metric
 
 INPUT_ROOT = Path(project_root) / "artifacts" / "prediction"

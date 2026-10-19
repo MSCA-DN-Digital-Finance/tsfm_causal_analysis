@@ -14,170 +14,114 @@ if project_root not in sys.path:
 from src.utils import get_exp_id_from_meta
 
 
+def _process_single_run(
+    file_path: Path,
+    analysis_dir: Path,
+    input_root: Path,
+    param_registry: dict,
+    exp_config: dict,
+    load_strategy: str
+):
+    """Helper function to process an individual prediction or trajectory run."""
+    # 1. Check if analysis directory already exists
+    if analysis_dir.exists():
+        print(f"Skipping {file_path} as analysis directory {analysis_dir} already exists.")
+        return
+    
+    print(f"Parameter estimates for {file_path} will be saved to {analysis_dir}")
+    analysis_dir.mkdir(parents=True, exist_ok=True)
 
+    # 2. Extract experiment ID from meta.json in the generation folder
+    hash_val = file_path.parts[-3] if load_strategy == "prediction" else file_path.parts[-2]
+    gen_dir = input_root.parent / "generation" / hash_val
+    exp_id = get_exp_id_from_meta(gen_dir)
 
-def run_metric(INPUT_ROOT:str, OUTPUT_ROOT:str, param_registry:dict, exp_config:dict):
-    """
-    Iterate over each run directory in the given path and call calculate_param_estimates for each run.
+    exp_id_str = str(exp_id).strip() if exp_id is not None else ""
 
-    Args:
-        INPUT_ROOT (str): Path to the directory containing predictions.
-        OUTPUT_ROOT (str): Path to the directory where output files will be saved.
-        param_registry (dict): A dictionary mapping parameter statistic names to their corresponding functions.
-        exp_config (dict): The experiment configuration.
-
-    Returns:
-        None
-
-    """
-
-    INPUT_ROOT = Path(INPUT_ROOT)
-    OUTPUT_ROOT = Path(OUTPUT_ROOT)
-
-    # get all paths for predictions.npz files in the INPUT_ROOT directory
-    pred_file_paths = list(INPUT_ROOT.rglob("*/predictions.npz"))
-    print(f"Found {len(pred_file_paths)} predictions.npz files in {INPUT_ROOT}")
-
-    # for each predictions.npz file path
-    for pred_file_path in pred_file_paths:
-
-        hash = pred_file_path.parts[-3]
-        model = pred_file_path.parts[-2]
-
-        # 1. create the corresponding run directory in the OUTPUT_ROOT by chopping off the first two and the last part of the path and appending it to OUTPUT_ROOT
-        analysis_dir = OUTPUT_ROOT / hash / model
+    # 3. Safely extract the param_estimate_name from config
+    param_estimate_name = None
+    for exp in exp_config.get('experiments', []):
+        exp_id_candidate = str(str(exp.get('id')).strip()) 
         
-        # if the analysis_dir already exists, skip this run
-        if analysis_dir.exists():
-            print(f"Skipping {pred_file_path} as analysis directory {analysis_dir} already exists.")
-            continue
-        print(f"Parameter estimates for {pred_file_path} will be saved to {analysis_dir}")
+        # Compare string against string using exp_id_str
+        if exp_id_candidate == exp_id_str:
+            param_estimate_name = exp.get('analysis', {}).get('param_estimate')
+            break
 
-        # create the analysis directory if it doesn't exist
-        analysis_dir.mkdir(parents=True, exist_ok=True)
+    if not param_estimate_name:
+        raise KeyError(
+            f"Could not find an experiment matching ID '{exp_id}' in your configuration file. "
+            f"Available IDs: {[e.get('id') for e in exp_config.get('experiments', [])]}. If ID is there, error must be raised due to other issues in retrieving the parameter estimate name."
+        )
 
+    param_estimate_func = param_registry.get(param_estimate_name)
 
-
-        # 2. get experiment_id from artifacts/trajectories/hash/meta.json for a given run path
-        gen_dir = INPUT_ROOT.parent / "generation" / hash # information about the experiment_id is stored in the generation folder, not in the prediction folder
-        exp_id = get_exp_id_from_meta(gen_dir)
-
-        # 3. Safely extract the param_estimate_name from the experiments list
-        param_estimate_name = None
-
-        for exp in exp_config.get('experiments', []):
-            # Convert both IDs to strings to ensure matching type ('1' == '1')
-            if str(exp.get('id')) == str(exp_id):
-                param_estimate_name = exp.get('analysis', {}).get('param_estimate')
-                break
-
-        # Handle edge case where lookup fails
-        if not param_estimate_name:
-            raise KeyError(
-                f"Could not find an experiment matching ID '{exp_id}' in your configuration file. "
-                f"Available IDs: {[e.get('id') for e in exp_config.get('experiments', [])]}"
-    )
-
-        # 4. select parameter statistic function from param_registry
-        param_estimate_func = param_registry.get(param_estimate_name)
-
-        # 5. Load predictions.npz file and extract the 'trajectory' array safely
-        with np.load(pred_file_path) as data:
+    # 4. Load and preprocess data based on strategy
+    with np.load(file_path) as data:
+        if load_strategy == "prediction":
             key = 'trajectory' if 'trajectory' in data.files else data.files[0]
-            trajectory = data[key]
-            
-            # 1. Remove all single-dimensional entries (e.g., shape (1, 200, 1) becomes (200,) or (samples, seq_len))
-            trajectory = np.squeeze(trajectory)
-            
-            # 2. If it's still multi-dimensional (e.g. multiple forecast samples like (100, 200)), take the mean across samples
+            trajectory = np.squeeze(data[key])
             if trajectory.ndim > 1:
                 trajectory = np.mean(trajectory, axis=0)
-                
-            # Ensure it is a standard contiguous float64 1D array
             trajectory = np.asarray(trajectory, dtype=np.float64)
+            print(f"Using key {key} to retrieve trajectory from {file_path}.")
+        elif load_strategy == "trajectory":
+            trajectory = data['x']
+        else:
+            raise ValueError(f"Unknown load strategy: {load_strategy}")
+
+    # 5. Run metric function and save results
+    try:
+        param_estimate_value = param_estimate_func(trajectory)
+    except Exception as e:
+        print(f"Error computing {param_estimate_name} for {file_path}: {e}")
+        param_estimate_value = None
+
+    results = {param_estimate_name: param_estimate_value}
+    
+    param_estimates_file = analysis_dir / "param_estimates.json"
+    with open(param_estimates_file, 'w') as f:
+        json.dump(results, f, indent=4)
+
+
+def run_metric(INPUT_ROOT: str, OUTPUT_ROOT: str, param_registry: dict, exp_config: dict):
+    """
+    Iterate over prediction and trajectory run directories and calculate parameter estimates.
+    """
+    input_root = Path(INPUT_ROOT)
+    output_root = Path(OUTPUT_ROOT)
+
+    # --- Process Predictions ---
+    pred_file_paths = list(input_root.rglob("*/predictions.npz"))
+    print(f"Found {len(pred_file_paths)} predictions.npz files in {input_root}")
+
+    for pred_file_path in pred_file_paths:
+        hash_val = pred_file_path.parts[-3]
+        model = pred_file_path.parts[-2]
+        analysis_dir = output_root / hash_val / model
         
-        print(f"Using key {key} to retrieve trajectory from {pred_file_path}.")
+        _process_single_run(
+            file_path=pred_file_path,
+            analysis_dir=analysis_dir,
+            input_root=input_root,
+            param_registry=param_registry,
+            exp_config=exp_config,
+            load_strategy="prediction"
+        )
 
-
-        # 6. run the parameter statistic function on the loaded data
-        try:
-            param_estimate_value = param_estimate_func(trajectory)
-        except Exception as e:
-            print(f"Error computing {param_estimate_name} for {pred_file_path}: {e}")
-            param_estimate_value = None
-
-        # 7. create a results dictionary to store the computed parameter statistics
-        results = {param_estimate_name: param_estimate_value}
-
-        # 8. save the results dictionary to analysis_dir/param_estimates.json
-        param_estimates_file = analysis_dir / "param_estimates.json"
-        with open(param_estimates_file, 'w') as f:
-            json.dump(results, f, indent=4)
-
-    # Do the same for trajectories.npz files in the INPUT_ROOT.parent / "generation" directory
-    traj_file_paths = list(INPUT_ROOT.parent.rglob("*/trajectory.npz"))
-    print(f"Found {len(traj_file_paths)} trajectory.npz files in {INPUT_ROOT.parent}")
+    # --- Process Trajectories ---
+    traj_file_paths = list(input_root.parent.rglob("*/trajectory.npz"))
+    print(f"Found {len(traj_file_paths)} trajectory.npz files in {input_root.parent}")
 
     for traj_file_path in traj_file_paths:
-        hash = traj_file_path.parts[-2]
+        hash_val = traj_file_path.parts[-2]
+        analysis_dir = output_root / hash_val / "trajectory"
 
-
-        # 1. create the corresponding run directory in the OUTPUT_ROOT by chopping off the first two and the last part of the path and appending it to OUTPUT_ROOT
-        analysis_dir = OUTPUT_ROOT / hash / "trajectory"
-
-        # if the analysis_dir already exists, skip this run
-        if analysis_dir.exists():
-            print(f"Skipping {traj_file_path} as analysis directory {analysis_dir} already exists.")
-            continue
-        print(f"Parameter estimates for {traj_file_path} will be saved to {analysis_dir}")
-
-        # create the analysis directory if it doesn't exist
-        analysis_dir.mkdir(parents=True, exist_ok=True)
-
-        # 2. get experiment_id from artifacts/trajectories/hash/meta.json for a given run path
-        gen_dir = Path(INPUT_ROOT).parent / "generation" / hash # information about the experiment_id is stored in the generation folder, not in the prediction folder
-        exp_id = get_exp_id_from_meta(gen_dir)
-
-        # 3. Safely extract the param_estimate_name from the experiments list
-        param_estimate_name = None
-
-        for exp in exp_config.get('experiments', []):
-            # Convert both IDs to strings to ensure matching type ('1' == '1')
-            if str(exp.get('id')) == str(exp_id):
-                param_estimate_name = exp.get('analysis', {}).get('param_estimate')
-                break
-
-        # Handle edge case where lookup fails
-        if not param_estimate_name:
-            raise KeyError(
-                f"Could not find an experiment matching ID '{exp_id}' in your configuration file. "
-                f"Available IDs: {[e.get('id') for e in exp_config.get('experiments', [])]}"
-    )
-
-        # 4. select parameter statistic function from param_registry
-        param_estimate_func = param_registry.get(param_estimate_name)
-
-        # 5. load trajectories.npz file and extract the 'x' array
-        with np.load(traj_file_path) as data:
-            trajectory = data['x']
-
-        # 6. run the parameter statistic function on the loaded data
-        try:
-            param_estimate_value = param_estimate_func(trajectory)
-        except Exception as e:
-            print(f"Error computing {param_estimate_name} for {traj_file_path}: {e}")
-            param_estimate_value = None
-
-        # 7. create a results dictionary to store the computed parameter statistics
-        results = {param_estimate_name: param_estimate_value}
-
-        # 8. save the results dictionary to analysis_dir/param_estimates.json
-        param_estimates_file = analysis_dir / "param_estimates.json"
-        with open(param_estimates_file, 'w') as f:
-            json.dump(results, f, indent=4)
-
-
-    
-
-    
-
+        _process_single_run(
+            file_path=traj_file_path,
+            analysis_dir=analysis_dir,
+            input_root=input_root,
+            param_registry=param_registry,
+            exp_config=exp_config,
+            load_strategy="trajectory"
+        )

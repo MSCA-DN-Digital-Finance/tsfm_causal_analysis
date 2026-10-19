@@ -31,7 +31,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_mean"
+      param_estimate: "estimated_mean"
 
   # -----------------------
   # Experiment 2: AR(1) persistence
@@ -55,7 +55,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_beta"
+      param_estimate: "estimated_beta"
 
   # -----------------------
   # Experiment 3: HO wavelength
@@ -80,7 +80,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_wavelength"
+      param_estimate: "estimated_wavelength"
 
 
   # -----------------------
@@ -104,7 +104,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_dwell_time"
+      param_estimate: "estimated_dwell_time"
 
   # -----------------------
   # Experiment 5: Energy Release
@@ -127,7 +127,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_threshold"
+      param_estimate: "estimated_threshold"
 
 
 
@@ -150,7 +150,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_hurst_exponent"
+      param_estimate: "estimated_hurst_exponent"
 
 ####################################
 # Sensitivity Analysis Experiments
@@ -179,7 +179,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_wavelength"
+      param_estimate: "estimated_wavelength"
 
   # -----------------------
   # Experiment 8: HO wavelength with sigma = 0.2
@@ -204,7 +204,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_wavelength"
+      param_estimate: "estimated_wavelength"
 
   # -----------------------
   # Experiment 9: HO wavelength with sigma = 0.4
@@ -229,7 +229,7 @@ experiments:
       input_length: 200
       output_length: 200
     analysis:
-      param_stat: "estimated_wavelength"
+      param_estimate: "estimated_wavelength"
 
 
   # -----------------------
@@ -253,7 +253,7 @@ experiments:
       input_length: 400
       output_length: 200
     analysis:
-      param_stat: "estimated_dwell_time"
+      param_estimate: "estimated_dwell_time"
 
   # -----------------------
   # Experiment 11: Regime Switch with T = 600
@@ -276,7 +276,7 @@ experiments:
       input_length: 600
       output_length: 200
     analysis:
-      param_stat: "estimated_dwell_time"
+      param_estimate: "estimated_dwell_time"
 
   # -----------------------
   # Experiment 12: Regime Switch with T = 800
@@ -299,4 +299,28 @@ experiments:
       input_length: 800
       output_length: 200
     analysis:
-      param_stat: "estimated_dwell_time"
+      param_estimate: "estimated_dwell_time"
+
+####################################
+# Case Study Experiments
+####################################
+
+  # -----------------------
+  # Experiment 13: Unisolar
+  # -----------------------
+  - id: 13
+    name: "Unisolar"
+    generator:
+      type: "unisolar"
+      params: {} # placeholder dummy as there are no other parameters besides hurst exponent
+      sweep:
+        slice_length: [ # one 24-hour cycle is 96 15-minute time steps 
+          96, 192, 288, 384, 480,
+          576, 672, 768, 864, 960
+          ]
+    prediction:
+      input_length: 800
+      output_length: 200
+    analysis:
+      param_estimate: "estimated_wavelength"
+
