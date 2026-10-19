@@ -180,20 +180,20 @@ def breakpoint_runner(df: pd.DataFrame, path: str) -> pd.DataFrame:
 
     # Step 2: iterate over experiments
     for (exp_id, gen_name), group in grouped:
-        x = group[group['param_est_of'] == 'trajectory']['param_est_value'].values
+        x = group[group['param_estimate_of'] == 'trajectory']['param_estimate_value'].values
 
         # Step 2.1: Skip if x array is len(0)
         if len(x) == 0:
             continue
 
         # Step 2.2: Iterate over models for each experiment
-        for model_name in df['param_est_of'].unique().tolist():
+        for model_name in df['param_estimate_of'].unique().tolist():
 
             # Ignore trajectory as it is not a model
             if model_name == 'trajectory':
                 continue
 
-            y = group[group['param_est_of'] == model_name]['param_est_value'].values
+            y = group[group['param_estimate_of'] == model_name]['param_estimate_value'].values
 
             # Skip if x and y do not have same length. 
             if len(x) != len(y):

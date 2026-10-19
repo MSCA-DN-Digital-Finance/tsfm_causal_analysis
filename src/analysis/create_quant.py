@@ -11,13 +11,13 @@ import statsmodels.api as sm
 from pathlib import Path
 import sys
 
-from analysis.breakpoint_funcs import *
 
 # Calculate the project root (2 levels up from src/prediction/)
 project_root = str(Path(__file__).resolve().parents[2])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
+from src.analysis.breakpoint_funcs import *
 
 
 INPUT_FILE = Path(project_root) / "artifacts" / "dataset" / "aggregated_dataset.csv"
