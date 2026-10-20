@@ -9,8 +9,9 @@ from __future__ import annotations
 
 from typing import Any, Dict
 import numpy as np
+import pandas as pd
 from fbm import FBM
-
+from pathlib import Path
 
 
 Array = np.ndarray
@@ -353,13 +354,149 @@ def fractal_brownian_motion(
     return out
 
 
+def unisolar_generator(
+    T: int = 200, # dummy that is not used but required for compatibility with the generator registry
+    slice_length: int = 200,
+    *,
+    seed_noise: int = 1, # dummy that is not used but required for compatibility with the generator registry
+    return_x: bool = True 
+) -> Dict[str, Any]:
+    """
+    Generates a trajecories from the Unisolar dataset by loading the dataset,
+    Selecting 'SolarGeneration' column and returning 'slice_length' number of values from
+    randomly selected starting point.
+    """
+
+    # Check for valid T and slice_length
+
+    if T <= 0:
+            raise ValueError("T must be positive.")
+    if slice_length <= 0:
+        raise ValueError("slice_length must be positive.")
+
+    # Load the Unisolar dataset
+    try:
+        # Get the project root dynamically based on the current file's location
+        ROOT_DIR = Path(__file__).resolve().parents[2]  # Adjust parent levels if needed
+        DATA_PATH = ROOT_DIR / "case_studies" / "unisolar" / "Solar_Energy_Generation.csv"
+        df = pd.read_csv(DATA_PATH)
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Unisolar dataset not found at {DATA_PATH}. Please ensure the dataset is available.")
+
+    # preprocess the data to select the 'SolarGeneration' column
+    df_site = df[(df['CampusKey'] == 2) & (df['SiteKey'] == 1)]
+    df_site['SolarGeneration'] = df_site['SolarGeneration'].fillna(0)
+    data = df_site['SolarGeneration'].values
+
+    # Randomly select a starting index for the slice
+    rng = np.random.default_rng()
+    max_start_index = len(data) - slice_length
+
+    if max_start_index <= 0:
+        raise ValueError("slice_length is too large for the available data.")
+
+    start_index = rng.integers(0, max_start_index)
+    slice_data = data[start_index:start_index + slice_length]
+
+    # Build the output dictionary
+    out = {
+        "name": "unisolar",
+        "T": int(slice_length), # we replace T with slice_length to allow for sweep configuration in experiment_config.yaml
+        "params": {
+            "slice_length": int(slice_length)
+        },
+        "seeds": {"start_index": int(start_index)},
+        "signal": slice_data.astype(float),
+        "noise": np.zeros(slice_length, dtype=float),  # No noise added
+    }
+
+    if return_x:
+        out["x"] = slice_data.astype(float)  # x is just the signal in this case
+
+    return out
+
+
+
+def swat_generator(
+    T: int = 200, # dummy that is not used but required for compatibility with the generator registry
+    slice_length: int = 200,
+    *,
+    seed_noise: int = 1, # dummy that is not used but required for compatibility with the generator registry
+    return_x: bool = True 
+) -> Dict[str, Any]:
+    """
+    Generates a trajecories from the SWAT dataset by loading the dataset,
+    Selecting 'P101' column and returning 'slice_length' number of values from
+    randomly selected starting point.
+    """
+
+    # Check for valid T and slice_length
+
+    if T <= 0:
+            raise ValueError("T must be positive.")
+    if slice_length <= 0:
+        raise ValueError("slice_length must be positive.")
+
+    # Load the SWAT dataset
+    try:
+        # Get the project root dynamically based on the current file's location
+        ROOT_DIR = Path(__file__).resolve().parents[2]  # Adjust parent levels if needed
+        DATA_PATH = ROOT_DIR / "case_studies" / "swat" / "normal.csv"
+        df = pd.read_csv(DATA_PATH)
+
+    except FileNotFoundError:
+        raise FileNotFoundError(f"SWAT dataset not found at {DATA_PATH}. Please ensure the dataset is available.")
+
+    # preprocess the data to select the 'P101' column
+    data = df['P101']
+
+
+    # downsample to every 10 value
+    data = data[::10].reset_index(drop=True)
+
+    # extrat the values as a numpy array
+    data = data.values
+
+
+
+    # Randomly select a starting index for the slice
+    rng = np.random.default_rng()
+    max_start_index = len(data) - slice_length
+
+    if max_start_index <= 0:
+        raise ValueError("slice_length is too large for the available data.")
+
+    start_index = rng.integers(0, max_start_index)
+    slice_data = data[start_index:start_index + slice_length]
+
+    # Build the output dictionary
+    out = {
+        "name": "swat",
+        "T": int(slice_length), # we replace T with slice_length to allow for sweep configuration in experiment_config.yaml
+        "params": {
+            "slice_length": int(slice_length)
+        },
+        "seeds": {"start_index": int(start_index)},
+        "signal": slice_data.astype(float),
+        "noise": np.zeros(slice_length, dtype=float),  # No noise added
+    }
+
+    if return_x:
+        out["x"] = slice_data.astype(float)  # x is just the signal in this case
+
+    return out
+
+
 GENERATOR_REGISTRY = {
     "rw_drift": random_walk_with_drift,
     "ar1": ar1_with_noise,
     "harmonic": harmonic_oscillator_with_noise,
     "regime": regime_switch_with_noise,
     "energy": energy_release_with_noise,
-    "fbm": fractal_brownian_motion
+    "fbm": fractal_brownian_motion,
+    "unisolar": unisolar_generator,
+    "swat": swat_generator,  # Assuming the same function is used for SWAT dataset
 }
 
 

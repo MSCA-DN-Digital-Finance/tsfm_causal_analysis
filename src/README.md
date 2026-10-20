@@ -8,6 +8,7 @@ The plot below shows the data flow across the steps contained in the subdirector
 
 ```mermaid
 graph TD
+    cs_data[case_studies/.../...csv] --> create_traj[create_traj.py]
     exp_conf[experiment_config.yaml] --> create_traj[create_traj.py]
     create_traj --> out_gen[artifacts/trajectories/...]
     out_gen --> create_preds[create_preds_modelname.py]
@@ -19,4 +20,6 @@ graph TD
     create_dataset --> out_dataset[artifacts/dataset/...]
     out_dataset --> create_viz[create_viz.py]
     create_viz --> out_viz[artifacts/plots/...]
+    out_dataset --> create_quant[create_quant.py]
+    create_quant --> out_quant[artifacts/dataset/...]
 ```

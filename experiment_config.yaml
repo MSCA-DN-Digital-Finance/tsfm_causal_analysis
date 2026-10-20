@@ -312,7 +312,7 @@ experiments:
     name: "Unisolar"
     generator:
       type: "unisolar"
-      params: {} # placeholder dummy as there are no other parameters besides hurst exponent
+      params: {} # placeholder dummy as there are no other parameters
       sweep:
         slice_length: [ # one 24-hour cycle is 96 15-minute time steps 
           96, 192, 288, 384, 480,
@@ -323,4 +323,23 @@ experiments:
       output_length: 200
     analysis:
       param_estimate: "estimated_wavelength"
+
+  # -----------------------
+  # Experiment 14: SWAT
+  # -----------------------
+  - id: 14
+    name: "SWAT"
+    generator:
+      type: "swat"
+      params: {} # placeholder dummy as there are no other parameters
+      sweep:
+        slice_length: [ # using the same slice lengths as the unisolar experiment for consistency 
+          96, 192, 288, 384, 480,
+          576, 672, 768, 864, 960
+          ]
+    prediction:
+      input_length: 800
+      output_length: 200
+    analysis:
+      param_estimate: "estimated_dwell_time"
 

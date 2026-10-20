@@ -11,7 +11,7 @@ sys.path.append(src_path)
 # Now Python can see the generation folder
 from generation.generators import GENERATOR_REGISTRY
 
-
+######################### Tests for synthetic generators #########################
 
 # Sample parameters for testing
 TEST_CONFIGS = [
@@ -68,3 +68,73 @@ def test_negative_t_error():
         with pytest.raises(ValueError):
             GENERATOR_REGISTRY[gen_name](T=-1)
 
+######################### Tests for case study generators #########################
+
+unisolar_generator = GENERATOR_REGISTRY["unisolar"]
+
+def test_unisolar_output_structure():
+    """Check if unisolar generator returns the correct structure, keys, and length."""
+    slice_length = 150
+    result = unisolar_generator(slice_length=slice_length)
+    
+    assert isinstance(result, dict)
+    assert "x" in result
+    assert "T" in result
+    assert result["T"] == slice_length
+    assert len(result["x"]) == slice_length
+    assert isinstance(result["x"], (np.ndarray, list))
+    # Ensure values are numeric
+    assert all(isinstance(val, (int, float, np.number)) for val in result["x"])
+
+def test_unisolar_randomness():
+    """Ensure that multiple calls return different slices (random starting points)."""
+    slice_length = 500
+    run1 = unisolar_generator(slice_length=slice_length)
+    run2 = unisolar_generator(slice_length=slice_length)
+    
+    # It's statistically extremely unlikely for two random slices of real-world 
+    # time-series data to be identical across all 50 points.
+    with pytest.raises(AssertionError):
+        np.testing.assert_array_equal(run1["x"], run2["x"])
+
+
+def test_unisolar_excessive_slice_length():
+    """Ensure generator raises an error if slice_length is larger than the dataset."""
+    # Assuming the dataset has fewer than 10,000,000 rows
+    with pytest.raises((ValueError, IndexError)):
+        unisolar_generator(slice_length=10_000_000)
+
+
+swat_generator = GENERATOR_REGISTRY["swat"]
+
+def test_swat_output_structure():
+    """Check if swat generator returns the correct structure, keys, and length."""
+    slice_length = 150
+    result = swat_generator(slice_length=slice_length)
+    
+    assert isinstance(result, dict)
+    assert "x" in result
+    assert "T" in result
+    assert result["T"] == slice_length
+    assert len(result["x"]) == slice_length
+    assert isinstance(result["x"], (np.ndarray, list))
+    # Ensure values are numeric
+    assert all(isinstance(val, (int, float, np.number)) for val in result["x"])
+
+def test_swat_randomness():
+    """Ensure that multiple calls return different slices (random starting points)."""
+    slice_length = 500
+    run1 = swat_generator(slice_length=slice_length)
+    run2 = swat_generator(slice_length=slice_length)
+    
+    # It's statistically extremely unlikely for two random slices of real-world 
+    # time-series data to be identical across all 50 points.
+    with pytest.raises(AssertionError):
+        np.testing.assert_array_equal(run1["x"], run2["x"])
+
+
+def test_swat_excessive_slice_length():
+    """Ensure generator raises an error if slice_length is larger than the dataset."""
+    # Assuming the dataset has fewer than 10,000,000 rows
+    with pytest.raises((ValueError, IndexError)):
+        swat_generator(slice_length=10_000_000)
