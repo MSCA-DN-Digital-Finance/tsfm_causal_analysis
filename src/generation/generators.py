@@ -364,7 +364,7 @@ def unisolar_generator(
     """
     Generates a trajecories from the Unisolar dataset by loading the dataset,
     Selecting 'SolarGeneration' column and returning 'slice_length' number of values from
-    randomly selected starting point.
+    randomly selected starting point anchored by 'seed_noise'.
     """
 
     # Check for valid T and slice_length
@@ -389,14 +389,30 @@ def unisolar_generator(
     df_site['SolarGeneration'] = df_site['SolarGeneration'].fillna(0)
     data = df_site['SolarGeneration'].values
 
-    # Randomly select a starting index for the slice
-    rng = np.random.default_rng()
-    max_start_index = len(data) - slice_length
-
-    if max_start_index <= 0:
+    # Use seed_noise to determine start_index independently of slice_length
+    # We use a fixed maximum reference horizon (e.g., maximum expected slice or dataset bounds)
+    # Here we seed the RNG with seed_noise directly:
+    rng = np.random.default_rng(seed_noise)
+    
+    # Define a safe maximum possible start index based on a reference max slice (e.g., 1000 or len(data))
+    # To allow maximum flexibility, we draw from the full valid index range of the dataset 
+    # minus a small buffer, or clamp it against the requested slice_length afterwards.
+    max_possible_start = len(data) - slice_length
+    if max_possible_start <= 0:
         raise ValueError("slice_length is too large for the available data.")
 
-    start_index = rng.integers(0, max_start_index)
+    # To keep start_index invariant of slice_length, we can derive it from a fixed upper bound 
+    # or use the generator's state consistently. Alternatively, drawing from a fixed dataset length:
+    absolute_max_start = len(data) - 200  # assuming 200 is your base/minimum reference slice length
+    if absolute_max_start <= 0:
+        absolute_max_start = max_possible_start
+
+    start_index = rng.integers(0, absolute_max_start)
+
+    # Validate that the fixed start_index + current slice_length does not exceed data bounds
+    if start_index + slice_length > len(data):
+        raise ValueError(f"seed_noise {seed_noise} yields start_index {start_index}, which exceeds dataset bounds for slice_length {slice_length}.")
+
     slice_data = data[start_index:start_index + slice_length]
 
     # Build the output dictionary
@@ -458,16 +474,30 @@ def swat_generator(
     # extrat the values as a numpy array
     data = data.values
 
-
-
-    # Randomly select a starting index for the slice
-    rng = np.random.default_rng()
-    max_start_index = len(data) - slice_length
-
-    if max_start_index <= 0:
+    # Use seed_noise to determine start_index independently of slice_length
+    # We use a fixed maximum reference horizon (e.g., maximum expected slice or dataset bounds)
+    # Here we seed the RNG with seed_noise directly:
+    rng = np.random.default_rng(seed_noise)
+    
+    # Define a safe maximum possible start index based on a reference max slice (e.g., 1000 or len(data))
+    # To allow maximum flexibility, we draw from the full valid index range of the dataset 
+    # minus a small buffer, or clamp it against the requested slice_length afterwards.
+    max_possible_start = len(data) - slice_length
+    if max_possible_start <= 0:
         raise ValueError("slice_length is too large for the available data.")
 
-    start_index = rng.integers(0, max_start_index)
+    # To keep start_index invariant of slice_length, we can derive it from a fixed upper bound 
+    # or use the generator's state consistently. Alternatively, drawing from a fixed dataset length:
+    absolute_max_start = len(data) - 200  # assuming 200 is your base/minimum reference slice length
+    if absolute_max_start <= 0:
+        absolute_max_start = max_possible_start
+
+    start_index = rng.integers(0, absolute_max_start)
+
+    # Validate that the fixed start_index + current slice_length does not exceed data bounds
+    if start_index + slice_length > len(data):
+        raise ValueError(f"seed_noise {seed_noise} yields start_index {start_index}, which exceeds dataset bounds for slice_length {slice_length}.")
+
     slice_data = data[start_index:start_index + slice_length]
 
     # Build the output dictionary

@@ -89,8 +89,8 @@ def test_unisolar_output_structure():
 def test_unisolar_randomness():
     """Ensure that multiple calls return different slices (random starting points)."""
     slice_length = 500
-    run1 = unisolar_generator(slice_length=slice_length)
-    run2 = unisolar_generator(slice_length=slice_length)
+    run1 = unisolar_generator(slice_length=slice_length, seed_noise=1)
+    run2 = unisolar_generator(slice_length=slice_length, seed_noise=2)
     
     # It's statistically extremely unlikely for two random slices of real-world 
     # time-series data to be identical across all 50 points.
@@ -124,8 +124,8 @@ def test_swat_output_structure():
 def test_swat_randomness():
     """Ensure that multiple calls return different slices (random starting points)."""
     slice_length = 500
-    run1 = swat_generator(slice_length=slice_length)
-    run2 = swat_generator(slice_length=slice_length)
+    run1 = swat_generator(slice_length=slice_length, seed_noise=1)
+    run2 = swat_generator(slice_length=slice_length, seed_noise=2)
     
     # It's statistically extremely unlikely for two random slices of real-world 
     # time-series data to be identical across all 50 points.

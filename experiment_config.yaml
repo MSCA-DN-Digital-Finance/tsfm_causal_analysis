@@ -319,7 +319,7 @@ experiments:
           576, 672, 768, 864, 960
           ]
     prediction:
-      input_length: 800
+      input_length: 800 # will be ignored by the unisolar generator, but still needs to be set to a value
       output_length: 200
     analysis:
       param_estimate: "estimated_wavelength"
@@ -333,13 +333,13 @@ experiments:
       type: "swat"
       params: {} # placeholder dummy as there are no other parameters
       sweep:
-        slice_length: [ # using the same slice lengths as the unisolar experiment for consistency 
-          96, 192, 288, 384, 480,
-          576, 672, 768, 864, 960
+        slice_length: [ 
+          300, 350, 400, 450, 500,
+          550, 600, 650, 700, 750
           ]
     prediction:
-      input_length: 800
-      output_length: 200
+      input_length: 800 # will be ignored by the swat generator, but still needs to be set to a value
+      output_length: 500
     analysis:
       param_estimate: "estimated_dwell_time"
 
