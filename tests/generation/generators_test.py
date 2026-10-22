@@ -18,7 +18,7 @@ TEST_CONFIGS = [
     ("rw_drift", {"T": 100, "mu": 0.1, "sigma": 1.0, "seed_noise": 42}),
     ("ar1", {"T": 50, "beta": 0.9, "sigma": 0.5, "seed_noise": 42}),
     ("harmonic", {"T": 200, "A": 2.0, "sigma": 0.1, "seed_noise": 42}),
-    ("regime", {"T":200, "dwell_time": 10, "slopes": [1.0, -1.0], "seed_noise": 42})
+    ("regime", {"T":200, "dwell_time": 10, "levels": [1.0, -1.0], "seed_noise": 42})
 ]
 
 @pytest.mark.parametrize("gen_name, params", TEST_CONFIGS)

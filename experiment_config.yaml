@@ -91,7 +91,7 @@ experiments:
     generator:
       type: "regime"
       params:
-        slopes: [1.0, -1.0]
+        levels: [1.0, -1.0]
         sigma: 0.05
       sweep:
         dwell_time: [
@@ -240,7 +240,7 @@ experiments:
     generator:
       type: "regime"
       params:
-        slopes: [1.0, -1.0]
+        levels: [1.0, -1.0]
         sigma: 0.05
       sweep:
         dwell_time: [
@@ -263,7 +263,7 @@ experiments:
     generator:
       type: "regime"
       params:
-        slopes: [1.0, -1.0]
+        levels: [1.0, -1.0]
         sigma: 0.05
       sweep:
         dwell_time: [
@@ -286,7 +286,7 @@ experiments:
     generator:
       type: "regime"
       params:
-        slopes: [1.0, -1.0]
+        levels: [1.0, -1.0]
         sigma: 0.05
       sweep:
         dwell_time: [
@@ -339,7 +339,7 @@ experiments:
           ]
     prediction:
       input_length: 800 # will be ignored by the swat generator, but still needs to be set to a value
-      output_length: 500
+      output_length: 250 # max output length for TimesFM-2.5 is 256
     analysis:
       param_estimate: "estimated_dwell_time"
 

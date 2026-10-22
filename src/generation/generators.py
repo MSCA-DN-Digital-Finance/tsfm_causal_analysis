@@ -173,14 +173,14 @@ def regime_switch_with_noise(
     *,
     x0: float = 0.0,
     dwell_time: int = 10,
-    slopes: list[float] = [1.0, -1.0],
+    levels: list[float] = [1.0, -1.0],
     sigma: float = 1.0, 
     seed_noise: int = 1,
     return_x: bool = True,
 ) -> Dict[str, Any]:
     """
     Regime-switching trend (signal) + independent noise:
-        signal: s_t = s_{t-1} + slope_t  (cycling through slopes every dwell_time)
+        signal: s_t = s_{t-1} + slope_t  (cycling through levels every dwell_time)
         noise:  eps_t ~ N(0, sigma^2)
         x_t = s_t + eps_t
 
@@ -190,20 +190,18 @@ def regime_switch_with_noise(
         raise ValueError("T must be positive.")
     if sigma < 0:
         raise ValueError("sigma must be >= 0.")
-    if len(slopes) == 0:
-        raise ValueError("slopes list cannot be empty.")
+    if len(levels) == 0:
+        raise ValueError("levels list cannot be empty.")
 
     # 1. Generate the deterministic signal
     indices = np.arange(T)
-    num_regimes = len(slopes)
+    num_regimes = len(levels)
     regimes = (indices // dwell_time) % num_regimes
     
-    slopes_arr = np.array(slopes, dtype=float)
-    slope_array = slopes_arr[regimes]
+    levels_arr = np.array(levels, dtype=float)
+    signal = levels_arr[regimes]
     
-    # Cumulative sum of slopes starting from x0
-    # Note: we shift the cumsum so s_0 starts near x0 (or incorporates the first slope)
-    signal = float(x0) + np.cumsum(slope_array)
+
 
     # 2. Generate the noise trajectory
     noise = gaussian_noise(T=T, sigma=sigma, seed=seed_noise)
@@ -214,7 +212,7 @@ def regime_switch_with_noise(
         "T": int(T),
         "params": {
             "dwell_time": int(dwell_time),
-            "slopes": [float(s) for s in slopes],
+            "levels": [float(s) for s in levels],
             "sigma": float(sigma),
         },
         "seeds": {"noise": int(seed_noise)},
@@ -468,8 +466,8 @@ def swat_generator(
     data = df['P101']
 
 
-    # downsample to every 10 value
-    data = data[::10].reset_index(drop=True)
+    # downsample to every 30th value
+    data = data[::30].reset_index(drop=True)
 
     # extrat the values as a numpy array
     data = data.values

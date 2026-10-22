@@ -186,7 +186,7 @@ def test_estimated_wavelength(input_run, expected_output):
 
 ##################### Tests for estimated_dwell_time function ###################
 
-def generate_regime_series(dwell_time=20, num_regimes=4, slopes=[2.0, -2.0], sigma=0.01, seed=42):
+def generate_regime_series(dwell_time=20, num_regimes=4, levels=[2.0, -2.0], sigma=0.01, seed=42):
     """
     Generates a realistic multi-regime cumulative trend path with a known uniform 
     dwell time and a small amount of noise.
@@ -194,20 +194,20 @@ def generate_regime_series(dwell_time=20, num_regimes=4, slopes=[2.0, -2.0], sig
     rng = np.random.default_rng(seed)
     T = dwell_time * num_regimes
     indices = np.arange(T)
-    regimes = (indices // dwell_time) % len(slopes)
-    slope_array = np.array(slopes)[regimes]
+    regimes = (indices // dwell_time) % len(levels)
+    levels_array = np.array(levels)[regimes]
     noise = rng.normal(loc=0.0, scale=sigma, size=T)
-    return np.cumsum(slope_array + noise)
+    return levels_array + noise
 
 estimated_dwell_time_testdata = [
     # Case 0: Clean step shifts with perfect uniform dwell time of 30 steps
     (
-        generate_regime_series(dwell_time=30, num_regimes=10, slopes=[5.0, -5.0]),
+        generate_regime_series(dwell_time=30, num_regimes=10, levels=[5.0, -5.0]),
         30.0 # expected average dwell time
     ),
     # Case 1: Clean step shifts with uniform dwell time of 15 steps
     (
-        generate_regime_series(dwell_time=15, num_regimes=10, slopes=[10.0, -10.0]),
+        generate_regime_series(dwell_time=15, num_regimes=10, levels=[10.0, -10.0]),
         15.0 # expected average dwell time
     ),
     # Case 2: Insufficient observation sequence length (length <= 2)

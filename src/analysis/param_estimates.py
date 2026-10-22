@@ -127,19 +127,17 @@ def estimated_dwell_time(trajectory: np.ndarray, penalty: float = 1.5) -> float:
     if len(arr) <= 2:
         raise ValueError("Input arrays must contain more than 2 observations to calculate differences and dwell times.")
     
-    # 1. Convert trend to differences (slopes)
-    # This turns 'slope changes' into 'mean changes'
-    signal_diff = np.diff(arr)
+
     
-    # 2. Configure PELT
+    # 1. Configure PELT
     # 'l2' (Least Squares) is best for shifts in the mean
-    algo = rpt.Pelt(model="l2", jump=1).fit(signal_diff)
+    algo = rpt.Pelt(model="l2", jump=1).fit(arr)
     
-    # 3. Predict change points
+    # 2. Predict change points
     # The 'pen' value is the sensitivity. 
     result = algo.predict(pen=penalty)
     
-    # 4. Calculate Dwell Times
+    # 3. Calculate Dwell Times
     change_points = [0] + result
     dwell_times = np.diff(change_points)
     
