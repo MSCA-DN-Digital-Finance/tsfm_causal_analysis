@@ -33,34 +33,12 @@ experiments:
     analysis:
       param_estimate: "estimated_mean"
 
-  # -----------------------
-  # Experiment 2: AR(1) persistence
-  # -----------------------
-  - id: 2
-    name: "AR(1) persistence"
-    generator:
-      type: "ar1"
-      params:
-        x0: 0.0
-        c: 0.0
-        sigma: 1.0
-      sweep:
-        beta: [
-          0.05, 0.10, 0.15, 0.20, 0.25,
-          0.30, 0.35, 0.40, 0.45, 0.50,
-          0.55, 0.60, 0.65, 0.70, 0.75,
-          0.80, 0.85, 0.90, 0.95, 1.00
-          ]
-    prediction:
-      input_length: 200
-      output_length: 200
-    analysis:
-      param_estimate: "estimated_beta"
+
 
   # -----------------------
-  # Experiment 3: HO wavelength
+  # Experiment 2: HO wavelength
   # -----------------------
-  - id: 3
+  - id: 2
     name: "HO wavelength"
     generator:
       type: "harmonic"
@@ -84,9 +62,9 @@ experiments:
 
 
   # -----------------------
-  # Experiment 4: Regime Switch
+  # Experiment 3: Regime Switch
   # -----------------------
-  - id: 4
+  - id: 3
     name: "RS dwell time"
     generator:
       type: "regime"
@@ -107,9 +85,9 @@ experiments:
       param_estimate: "estimated_dwell_time"
 
   # -----------------------
-  # Experiment 5: Energy Release
+  # Experiment 4: Energy Release
   # -----------------------
-  - id: 5
+  - id: 4
     name: "ER threshold"
     generator:
       type: "energy"
@@ -130,36 +108,14 @@ experiments:
       param_estimate: "estimated_threshold"
 
 
-
-  # -----------------------
-  # Experiment 6: Fractal Brownian Motion
-  # -----------------------
-  - id: 6
-    name: "FBM hurst"
-    generator:
-      type: "fbm"
-      params: {} # placeholder dummy as there are no other parameters besides hurst exponent
-      sweep:
-        hurst: [
-          0.05, 0.10, 0.15, 0.20, 0.25,
-          0.30, 0.35, 0.40, 0.45, 0.50,
-          0.55, 0.60, 0.65, 0.70, 0.75,
-          0.80, 0.85, 0.90, 0.95, 0.99
-          ]
-    prediction:
-      input_length: 200
-      output_length: 200
-    analysis:
-      param_estimate: "estimated_hurst_exponent"
-
 ####################################
 # Sensitivity Analysis Experiments
 ####################################
 
   # -----------------------
-  # Experiment 7: HO wavelength with sigma = 0.1
+  # Experiment 5: HO wavelength with sigma = 0.1
   # -----------------------
-  - id: 7
+  - id: 5
     name: "HO wavelength with sigma = 0.1"
     generator:
       type: "harmonic"
@@ -182,9 +138,9 @@ experiments:
       param_estimate: "estimated_wavelength"
 
   # -----------------------
-  # Experiment 8: HO wavelength with sigma = 0.2
+  # Experiment 6: HO wavelength with sigma = 0.2
   # -----------------------
-  - id: 8
+  - id: 6
     name: "HO wavelength with sigma = 0.2"
     generator:
       type: "harmonic"
@@ -207,9 +163,9 @@ experiments:
       param_estimate: "estimated_wavelength"
 
   # -----------------------
-  # Experiment 9: HO wavelength with sigma = 0.4
+  # Experiment 7: HO wavelength with sigma = 0.4
   # -----------------------
-  - id: 9
+  - id: 7
     name: "HO wavelength with sigma = 0.4"
     generator:
       type: "harmonic"
@@ -233,9 +189,9 @@ experiments:
 
 
   # -----------------------
-  # Experiment 10: Regime Switch with T = 400
+  # Experiment 8: Regime Switch with T = 400
   # -----------------------
-  - id: 10
+  - id: 8
     name: "RS dwell time with T = 400"
     generator:
       type: "regime"
@@ -256,9 +212,9 @@ experiments:
       param_estimate: "estimated_dwell_time"
 
   # -----------------------
-  # Experiment 11: Regime Switch with T = 600
+  # Experiment 9: Regime Switch with T = 600
   # -----------------------
-  - id: 11
+  - id: 9
     name: "RS dwell time with T = 600"
     generator:
       type: "regime"
@@ -279,9 +235,9 @@ experiments:
       param_estimate: "estimated_dwell_time"
 
   # -----------------------
-  # Experiment 12: Regime Switch with T = 800
+  # Experiment 10: Regime Switch with T = 800
   # -----------------------
-  - id: 12
+  - id: 10
     name: "RS dwell time with T = 800"
     generator:
       type: "regime"
@@ -306,9 +262,9 @@ experiments:
 ####################################
 
   # -----------------------
-  # Experiment 13: Unisolar
+  # Experiment 11: Unisolar
   # -----------------------
-  - id: 13
+  - id: 11
     name: "Unisolar"
     generator:
       type: "unisolar"
@@ -325,9 +281,9 @@ experiments:
       param_estimate: "estimated_wavelength"
 
   # -----------------------
-  # Experiment 14: SWAT
+  # Experiment 12: SWAT
   # -----------------------
-  - id: 14
+  - id: 12
     name: "SWAT"
     generator:
       type: "swat"
@@ -343,3 +299,54 @@ experiments:
     analysis:
       param_estimate: "estimated_dwell_time"
 
+
+
+####################################
+# Other Generators
+####################################
+
+  # -----------------------
+  # Experiment 2: AR(1) persistence
+  # -----------------------
+  # - id: 2
+  #   name: "AR(1) persistence"
+  #   generator:
+  #     type: "ar1"
+  #     params:
+  #       x0: 0.0
+  #       c: 0.0
+  #       sigma: 1.0
+  #     sweep:
+  #       beta: [
+  #         0.05, 0.10, 0.15, 0.20, 0.25,
+  #         0.30, 0.35, 0.40, 0.45, 0.50,
+  #         0.55, 0.60, 0.65, 0.70, 0.75,
+  #         0.80, 0.85, 0.90, 0.95, 1.00
+  #         ]
+  #   prediction:
+  #     input_length: 200
+  #     output_length: 200
+  #   analysis:
+  #     param_estimate: "estimated_beta"
+
+
+  # -----------------------
+  # Experiment 6: Fractal Brownian Motion
+  # -----------------------
+  # - id: 6
+  #   name: "FBM hurst"
+  #   generator:
+  #     type: "fbm"
+  #     params: {} # placeholder dummy as there are no other parameters besides hurst exponent
+  #     sweep:
+  #       hurst: [
+  #         0.05, 0.10, 0.15, 0.20, 0.25,
+  #         0.30, 0.35, 0.40, 0.45, 0.50,
+  #         0.55, 0.60, 0.65, 0.70, 0.75,
+  #         0.80, 0.85, 0.90, 0.95, 0.99
+  #         ]
+  #   prediction:
+  #     input_length: 200
+  #     output_length: 200
+  #   analysis:
+  #     param_estimate: "estimated_hurst_exponent"
