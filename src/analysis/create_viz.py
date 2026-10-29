@@ -45,6 +45,7 @@ LABEL_MAPPINGS = {
     "dwell_time": r"$\tau$",
     "threshold": r"$\kappa$",
     "hurst": r"$h$",
+    "slice_length": "Slice Length"
 }
 
 COLOR_PALETTE = {
@@ -95,7 +96,7 @@ def apply_legend_style(ax, loc="upper left"):
 
 
 def make_experiment_boxplots(csv_path: str, output_dir: str):
-    """Plot 1: Boxplots of parameter statistics grouped by intervention."""
+    """Plot 1: Boxplots of parameter estimates grouped by intervention."""
     apply_pgf_style()
     df = pd.read_csv(csv_path)
     out_path = Path(output_dir)
@@ -160,7 +161,7 @@ def make_experiment_boxplots(csv_path: str, output_dir: str):
         ax.set_xticks(x_indices)
         ax.set_xticklabels(param_vals)
         ax.set_xlabel(f"Intervention Parameter ({x_symbol})")
-        ax.set_ylabel(f"Parameter Statistic ({y_symbol})")
+        ax.set_ylabel(f"Parameter Estimate ({y_symbol})")
 
         style_spines_and_ticks(ax)
         apply_legend_style(ax, loc="upper left")
