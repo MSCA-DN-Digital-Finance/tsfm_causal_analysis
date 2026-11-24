@@ -295,7 +295,7 @@ def make_experiment_trajectories(csv_path: str, output_dir: str):
         )
 
         # filter down to every third index for plotting
-        param_values = sorted(df_exp["parameter_value"].unique())[::3]
+        param_values = sorted(df_exp["parameter_value"].unique())[::4]
 
         model_paths = {}
         gt_paths = {}
